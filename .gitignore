@@ -1,0 +1,12 @@
+# Python bytecode
+*.pyc
+__pycache__/
+
+
+# Environment files
+.env
+
+# Virtual environments
+venv/
+llama-env/
+pyvenv.cfg
