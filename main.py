@@ -16,7 +16,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # for local dev
         "https://school-chatbot-frontend.vercel.app",  # production domain
-        "https://school-chatbot-frontend-q1ge013d5-annchukwukas-projects.vercel.app",  # this specific deploy too
+        "https://school-chatbot-frontend-q1ge013d5-annchukwukas-projects.vercel.app",  
     ],
     allow_credentials=True,
     allow_methods=["*"],  # must allow HEAD, OPTIONS, POST
