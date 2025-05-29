@@ -7,7 +7,7 @@ from typing import Optional
 from uuid import uuid4
 from intent_handler import detect_intent, intent_responses, save_chat_message, log_unknown_query
 from config import OPENAI_API_KEY, OPENAI_MODEL
-import openai
+from openai import OpenAI
 
 app = FastAPI()
 
@@ -48,10 +48,10 @@ async def chat_endpoint(req: ChatRequest):
         return ChatResponse(answer=answer)
 
     try:
-        openai.api_key = OPENAI_API_KEY
-        response = openai.ChatCompletion.create(
-    model=OPENAI_MODEL,
-    messages=[
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+     messages=[
         {
             "role": "system",
             "content": (
@@ -61,7 +61,8 @@ async def chat_endpoint(req: ChatRequest):
         },
         {"role": "user", "content": q}
     ]
- )
+)
+      
         reply = response.choices[0].message.content.strip()
         if req.log_to_firebase:
             save_chat_message(session_id, reply, "bot")
