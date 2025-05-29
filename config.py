@@ -1,5 +1,4 @@
 import os
-import json
 from firebase_admin import credentials, initialize_app
 from pathlib import Path
 from dotenv import load_dotenv
@@ -24,23 +23,25 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "your-openai-key-here")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
 
+# main.py or firebase_config.py
 
+firebase_config = {
+    "type": os.getenv("FIREBASE_TYPE"),
+    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
+    "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
+    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace('\\n', '\n'),
+    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+    "client_id": os.getenv("FIREBASE_CLIENT_ID"),
+    "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
+    "token_uri": os.getenv("FIREBASE_TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("FIREBASE_AUTH_PROVIDER_CERT_URL"),
+    "client_x509_cert_url": os.getenv("FIREBASE_CLIENT_CERT_URL"),
+    "universe_domain": os.getenv("FIREBASE_UNIVERSE_DOMAIN"),
+}
 
+import firebase_admin
 
-
-
-
-cred_json = os.getenv("FIREBASE_CRED_JSON")
-if not cred_json:
-    raise RuntimeError("Missing FIREBASE_CRED_JSON environment variable")
-
-# Convert escaped \n back to actual newlines
-cred_dict = json.loads(cred_json)
-cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
-
-cred = credentials.Certificate(cred_dict)
-initialize_app(cred)
-
-
-
+if not firebase_admin._apps:
+    cred = credentials.Certificate(firebase_config)
+    firebase_admin.initialize_app(cred)
 
