@@ -1,4 +1,5 @@
 import os
+import json
 from firebase_admin import credentials, initialize_app
 from pathlib import Path
 from dotenv import load_dotenv
@@ -25,13 +26,19 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
 
 
-import os, json
+
+
+
 
 cred_json = os.getenv("FIREBASE_CRED_JSON")
 if not cred_json:
-    raise RuntimeError("Missing FIREBASE_CRED_JSON env variable")
+    raise RuntimeError("Missing FIREBASE_CRED_JSON environment variable")
 
-cred = credentials.Certificate(json.loads(cred_json))
+# Convert escaped \n back to actual newlines
+cred_dict = json.loads(cred_json)
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+
+cred = credentials.Certificate(cred_dict)
 initialize_app(cred)
 
 
