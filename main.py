@@ -7,13 +7,14 @@ from typing import Optional
 from uuid import uuid4
 from intent_handler import detect_intent, intent_responses, save_chat_message, log_unknown_query
 from config import OPENAI_API_KEY, OPENAI_MODEL
-from openai import OpenAI
+import openai
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
+                    
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,20 +48,20 @@ async def chat_endpoint(req: ChatRequest):
         return ChatResponse(answer=answer)
 
     try:
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        response = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are Azalea, a friendly university assistant at BAU. "
-                        "Answer any academic, school-related, or general student questions helpfully."
-                    )
-                },
-                {"role": "user", "content": q}
-            ]
-        )
+        openai.api_key = OPENAI_API_KEY
+        response = openai.ChatCompletion.create(
+    model=OPENAI_MODEL,
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You are Azalea, a friendly university assistant at BAU. "
+                "Answer any academic, school-related, or general student questions helpfully."
+            )
+        },
+        {"role": "user", "content": q}
+    ]
+ )
         reply = response.choices[0].message.content.strip()
         if req.log_to_firebase:
             save_chat_message(session_id, reply, "bot")
