@@ -13,12 +13,16 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-                    
+    allow_origins=[
+        "http://localhost:5173",  # for local dev
+        "https://school-chatbot-frontend.vercel.app",  # production domain
+        "https://school-chatbot-frontend-q1ge013d5-annchukwukas-projects.vercel.app",  # this specific deploy too
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # must allow HEAD, OPTIONS, POST
     allow_headers=["*"],
 )
+
 
 class ChatRequest(BaseModel):
     message: str
