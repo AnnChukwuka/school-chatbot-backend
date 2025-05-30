@@ -17,7 +17,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         # "http://localhost:5173",  # for local dev
-        "https://school-chatbot-frontend.vercel.app",  # production domain
+        "https://school-chatbot-frontend.vercel.app/",  # production domain
     ],
     allow_credentials=True,
     allow_methods=["*"],
