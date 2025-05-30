@@ -1,6 +1,6 @@
 # backend/main.py
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -8,6 +8,8 @@ from uuid import uuid4
 from intent_handler import detect_intent, intent_responses, save_chat_message, log_unknown_query
 from config import OPENAI_API_KEY, OPENAI_MODEL
 from openai import OpenAI
+import firebase_admin
+from firebase_admin import firestore
 
 app = FastAPI()
 
@@ -23,6 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+db = firestore.client()
 
 class ChatRequest(BaseModel):
     message: str
@@ -54,31 +57,46 @@ async def chat_endpoint(req: ChatRequest):
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
-        model=OPENAI_MODEL,
-     messages=[
-        {
-            "role": "system",
-            "content": (
-                "You are Azalea, a friendly university assistant at BAU. "
-                "Answer any academic, school-related, or general student questions helpfully."
-            )
-        },
-        {"role": "user", "content": q}
-    ]
-)
-      
+            model=OPENAI_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are Azalea, a friendly university assistant at BAU. "
+                        "Answer any academic, school-related, or general student questions helpfully."
+                    )
+                },
+                {"role": "user", "content": q}
+            ]
+        )
+
         reply = response.choices[0].message.content.strip()
         if req.log_to_firebase:
             save_chat_message(session_id, reply, "bot")
         return ChatResponse(answer=reply)
     except Exception as e:
-        print(" OpenAI fallback failed:", e)
+        print("OpenAI fallback failed:", e)
         fallback = "Sorry, I couldn't find an answer to that."
         if req.log_to_firebase:
             save_chat_message(session_id, fallback, "bot")
         return ChatResponse(answer=fallback)
 
+@app.get("/chat/history")
+async def get_chat_history(session_id: str):
+    ref = db.collection("chats").document(session_id).collection("messages")
+    query = ref.order_by("timestamp")
+    docs = query.stream()
+    history = [{"sender": doc.get("sender"), "text": doc.get("text")} for doc in docs]
+    return {"history": history}
 
+@app.post("/chat/clear")
+async def clear_chat_history(data: dict):
+    session_id = data.get("session_id")
+    ref = db.collection("chats").document(session_id).collection("messages")
+    docs = ref.stream()
+    for doc in docs:
+        doc.reference.delete()
+    return {"message": "Chat history cleared"}
 
 if __name__ == "__main__":
     import uvicorn
