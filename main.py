@@ -16,9 +16,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # for local dev
+        # "http://localhost:5173",  # for local dev
         "https://school-chatbot-frontend.vercel.app",  # production domain
-        "https://school-chatbot-frontend-q1ge013d5-annchukwukas-projects.vercel.app",  
     ],
     allow_credentials=True,
     allow_methods=["*"],
