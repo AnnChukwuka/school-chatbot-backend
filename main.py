@@ -27,7 +27,7 @@ app.add_middleware(
 
 db = firestore.client()
 
-API_KEY = 1p7xI9z!rF6qK3nL^a0BzU5w$dRgV2Ye
+API_KEY = " 1p7xI9z!rF6qK3nL^a0BzU5w$dRgV2Ye "
 
 
 class ChatRequest(BaseModel):
