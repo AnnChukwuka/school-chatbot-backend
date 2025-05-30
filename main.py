@@ -1,6 +1,6 @@
 # backend/main.py
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -21,11 +21,14 @@ app.add_middleware(
         "https://school-chatbot-frontend-q1ge013d5-annchukwukas-projects.vercel.app",  
     ],
     allow_credentials=True,
-    allow_methods=["*"],  # must allow HEAD, OPTIONS, POST
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 db = firestore.client()
+
+API_KEY = 1p7xI9z!rF6qK3nL^a0BzU5w$dRgV2Ye
+
 
 class ChatRequest(BaseModel):
     message: str
@@ -34,6 +37,10 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+
+def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest):
@@ -82,7 +89,8 @@ async def chat_endpoint(req: ChatRequest):
         return ChatResponse(answer=fallback)
 
 @app.get("/chat/history")
-async def get_chat_history(session_id: str):
+async def get_chat_history(session_id: str, x_api_key: str = Header(...)):
+    verify_api_key(x_api_key)
     ref = db.collection("chats").document(session_id).collection("messages")
     query = ref.order_by("timestamp")
     docs = query.stream()
@@ -90,7 +98,8 @@ async def get_chat_history(session_id: str):
     return {"history": history}
 
 @app.post("/chat/clear")
-async def clear_chat_history(data: dict):
+async def clear_chat_history(data: dict, x_api_key: str = Header(...)):
+    verify_api_key(x_api_key)
     session_id = data.get("session_id")
     ref = db.collection("chats").document(session_id).collection("messages")
     docs = ref.stream()
