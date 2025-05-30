@@ -1,6 +1,6 @@
 # backend/main.py
 
-from fastapi import FastAPI, Request, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -13,12 +13,10 @@ from firebase_admin import firestore
 
 app = FastAPI()
 
+# Updated CORS Middleware to allow dynamic Vercel URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        # "http://localhost:5173",  # for local dev
-        "https://school-chatbot-frontend.vercel.app",  # production domain
-    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Accept ALL Vercel app URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,7 +25,6 @@ app.add_middleware(
 db = firestore.client()
 
 API_KEY = "1p7xI9z!rF6qK3nL^a0BzU5w$dRgV2Ye"
-
 
 class ChatRequest(BaseModel):
     message: str
