@@ -10,3 +10,4 @@ __pycache__/
 venv/
 llama-env/
 pyvenv.cfg
+config.py
