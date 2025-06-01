@@ -1,6 +1,7 @@
 import os
 import firebase_admin
 from firebase_admin import credentials, initialize_app
+from config import API_KEY
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
@@ -22,6 +23,7 @@ MODEL_PATH = os.getenv("MODEL_PATH", BASE_DIR / "models/llama-2-7b-chat.Q4_K_M.g
 # ─────────────────────────────────────────────
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "your-openai-key-here")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+API_KEY = os.getenv("API_KEY")
 
 
 # main.py or firebase_config.py
