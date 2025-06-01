@@ -1,7 +1,6 @@
 import os
 import firebase_admin
 from firebase_admin import credentials, initialize_app
-from config import API_KEY
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
