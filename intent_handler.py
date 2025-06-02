@@ -108,7 +108,13 @@ intent_responses = {
     "bau_info": "BAU stands for Bahçeşehir Cyprus University. It's a private higher education institution located in Nicosia, Northern Cyprus. It is part of the global BAU Global network, offering undergraduate and graduate programs in English and Turkish, with a focus on international standards, academic excellence, and innovation. You can follow the link to visit the school website and learn more https://baucyprus.edu.tr/",
     "undergrad_duration": "Undergraduate programs typically last 4 years. However, some programs may be 5 or 6 years. Maximum allowed duration is 7–9 years depending on the program.",
     "tuition_fees": "Tuition is set annually by the Board of Trustees. Fees vary by program and student status. Payments can be made in full or installments. Financial obligations must be met to complete enrollment.",
-    "residence_permit": "To apply for your resident permit you have to have finished your course registration for the semester, then you can login to this website https://permissions.gov.ct.tr/login. if you have no previous permit on the Island you click on sign up and fill the information same as  it is on your ois and sign up. ",
+     "residence_permit": {
+        "text": (
+            "To apply for your residence permit, complete your course registration first, then login to https://permissions.gov.ct.tr/login. "
+            "If you're new, click on 'Sign up' and fill the form exactly as in your OIS portal."
+        ),
+        "image": "https://res.cloudinary.com/di5myl6tt/image/upload/v1748836820/Residence_process_guideline_vtmwip.jpg"
+    },                
     "student_letter": "To acquire you have to pay $5 or (TL equivalent)  through your ois payment portal or cash to to the accounting office, Then go to the registration office with the receipt to  get your Student Letter",
     "lecture_timetable": "To see your timetable you should head to your ois, IMAGE",
     "contact_student_affairs": "You  can contact the Dean of Students via email: Students.dean@baucyprus.edu.tr or Phone: +90 548 847 88 74",

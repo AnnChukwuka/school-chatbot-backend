@@ -26,6 +26,7 @@ db = firestore.client()
 
 class ChatRequest(BaseModel):
     message: str
+    image: Optional[str] = None
     session_id: Optional[str] = None
     log_to_firebase: Optional[bool] = True
 
@@ -50,10 +51,12 @@ async def chat_endpoint(req: ChatRequest):
         log_unknown_query(q)
 
     if intent and intent in intent_responses and intent != "unknown":
-        answer = intent_responses[intent]
-        if req.log_to_firebase:
-            save_chat_message(session_id, answer, "bot")
-        return ChatResponse(answer=answer)
+     response_data = intent_responses[intent]
+    answer = response_data["text"]
+    image = response_data.get("image")
+    if req.log_to_firebase:
+        save_chat_message(session_id, answer, "bot")  # Still text only stored
+    return ChatResponse(answer=answer, image=image)
 
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
