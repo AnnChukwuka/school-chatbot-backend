@@ -1,4 +1,5 @@
 # scripts/intent_handler.py
+
 import string
 import datetime
 import firebase_admin
@@ -8,12 +9,19 @@ from config import firebase_config
 db = firestore.client()
 
 
-def save_chat_message(session_id: str, text: str, sender: str):
-    db.collection("chats").document(session_id).collection("messages").add({
+def save_chat_message(session_id: str, text: str, sender: str, image: str = None):
+    # Flattened chat saving
+    chat_data = {
+        "session_id": session_id,
         "text": text,
         "sender": sender,
-        "timestamp": datetime.datetime.utcnow()
-    })
+        "timestamp": datetime.datetime.utcnow(),
+    }
+    if image:
+        chat_data["image"] = image
+
+    # Save directly to 'chats' collection
+    db.collection("chats").add(chat_data)
 
 def preprocess_input(user_input):
     user_input = user_input.lower().strip()
@@ -31,7 +39,6 @@ def detect_intent(user_input):
     tokens = preprocess_input(user_input)
     user_input_text = ' '.join(tokens)
 
-    # Quick keyword detection
     intent_keywords = {
         "greeting": ["hello", "hi", "hey", "whats", "yo", "howdy", "hiya", "greetings", "sup", "popping", "morning", "afternoon", "evening"],
         "thanks": ["thank", "thanks", "thankyou", "appreciate", "ok", "appreciated"],
@@ -42,7 +49,6 @@ def detect_intent(user_input):
         if any(word in tokens for word in keywords):
             return intent
 
-    # Check for known phrases
     phrase_keywords = {
         "academic_calendar": ["academic calendar", "show me the academic calendar", "when will final exam starting", "when is exam starting", "when is school resuming", "when does semester start", "school break dates", "is tomorrow school", "when is public holiday", "is there holiday tomorrow", "when is next school holiday"],
         "grading_system": ["what is the grading system", "grading system", "tell me about the grading"],
@@ -80,8 +86,6 @@ def detect_intent(user_input):
 
     log_unknown_query(user_input)
     return "unknown"
-
-
 
 intent_responses = {
     "greeting": "Hey there! How can I assist you today? 😊",

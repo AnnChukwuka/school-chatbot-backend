@@ -1,5 +1,3 @@
-# backend/main.py
-
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -24,7 +22,7 @@ app.add_middleware(
 
 db = firestore.client()
 
-# 🆕 Updated ChatResponse
+# Updated ChatRequest and ChatResponse
 class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
@@ -57,7 +55,7 @@ async def chat_endpoint(req: ChatRequest):
         image = response_data.get("image")
 
         if req.log_to_firebase:
-            save_chat_message(session_id, answer, "bot")
+            save_chat_message(session_id, answer, "bot", image=image)   # ✅ Now image passed
 
         return ChatResponse(answer=answer, image=image)
 
@@ -96,7 +94,7 @@ async def get_chat_history(session_id: str, x_api_key: str = Header(...)):
     ref = db.collection("chats").document(session_id).collection("messages")
     query = ref.order_by("timestamp")
     docs = query.stream()
-    history = [{"sender": doc.get("sender"), "text": doc.get("text")} for doc in docs]
+    history = [{"sender": doc.get("sender"), "text": doc.get("text"), "image": doc.get("image", None)} for doc in docs]
     return {"history": history}
 
 @app.post("/chat/clear")
