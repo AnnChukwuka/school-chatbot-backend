@@ -32,7 +32,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
-    image: Optional[str] = None  # <-- 🆕 Add this
+    image: Optional[str] = None  
 
 def verify_api_key(x_api_key: str = Header(...)):
     if x_api_key != API_KEY:
