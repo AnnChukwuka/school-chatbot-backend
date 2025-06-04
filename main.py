@@ -55,7 +55,7 @@ async def chat_endpoint(req: ChatRequest):
         image = response_data.get("image")
 
         if req.log_to_firebase:
-            save_chat_message(session_id, answer, "bot", image=image)   # ✅ Now image passed
+            save_chat_message(session_id, answer, "bot", image=image)  
 
         return ChatResponse(answer=answer, image=image)
 
@@ -67,8 +67,8 @@ async def chat_endpoint(req: ChatRequest):
                 {
                     "role": "system",
                     "content": (
-                        "You are Azalea, a friendly university assistant at BAU. "
-                        "Answer any academic, school-related, or general student questions helpfully."
+                        "You are Azalea, a friendly university assistant at Bahcesehir Cyprus University. "
+                        "Answer any academic, Bau Cyprus campus, school-related, or general student questions helpfully."
                     )
                 },
                 {"role": "user", "content": q}
