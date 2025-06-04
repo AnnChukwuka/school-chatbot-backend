@@ -1,7 +1,9 @@
+# backend/main.py
+
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional                    
 from uuid import uuid4
 from intent_handler import detect_intent, intent_responses, save_chat_message, log_unknown_query
 from config import OPENAI_API_KEY, OPENAI_MODEL, API_KEY
@@ -11,10 +13,10 @@ from firebase_admin import firestore
 
 app = FastAPI()
 
-# CORS Middleware
+# Updated CORS Middleware to allow dynamic Vercel URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Accept ALL Vercel app URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,7 +24,6 @@ app.add_middleware(
 
 db = firestore.client()
 
-# Updated ChatRequest and ChatResponse
 class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
@@ -30,7 +31,6 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
-    image: Optional[str] = None  
 
 def verify_api_key(x_api_key: str = Header(...)):
     if x_api_key != API_KEY:
@@ -50,14 +50,10 @@ async def chat_endpoint(req: ChatRequest):
         log_unknown_query(q)
 
     if intent and intent in intent_responses and intent != "unknown":
-        response_data = intent_responses[intent]
-        answer = response_data["text"]
-        image = response_data.get("image")
-
+        answer = intent_responses[intent]
         if req.log_to_firebase:
-            save_chat_message(session_id, answer, "bot", image=image)  
-
-        return ChatResponse(answer=answer, image=image)
+            save_chat_message(session_id, answer, "bot")
+        return ChatResponse(answer=answer)
 
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
@@ -67,8 +63,8 @@ async def chat_endpoint(req: ChatRequest):
                 {
                     "role": "system",
                     "content": (
-                        "You are Azalea, a friendly university assistant at Bahcesehir Cyprus University. "
-                        "Answer any academic, Bau Cyprus campus, school-related, or general student questions helpfully."
+                        "You are Azalea, a friendly university assistant at BAU. "
+                        "Answer any academic, school-related, or general student questions helpfully."
                     )
                 },
                 {"role": "user", "content": q}
@@ -76,10 +72,8 @@ async def chat_endpoint(req: ChatRequest):
         )
 
         reply = response.choices[0].message.content.strip()
-
         if req.log_to_firebase:
             save_chat_message(session_id, reply, "bot")
-
         return ChatResponse(answer=reply)
     except Exception as e:
         print("OpenAI fallback failed:", e)
@@ -94,7 +88,7 @@ async def get_chat_history(session_id: str, x_api_key: str = Header(...)):
     ref = db.collection("chats").document(session_id).collection("messages")
     query = ref.order_by("timestamp")
     docs = query.stream()
-    history = [{"sender": doc.get("sender"), "text": doc.get("text"), "image": doc.get("image", None)} for doc in docs]
+    history = [{"sender": doc.get("sender"), "text": doc.get("text")} for doc in docs]
     return {"history": history}
 
 @app.post("/chat/clear")
