@@ -40,15 +40,10 @@ def detect_intent(user_input):
     user_input_text = ' '.join(tokens)
 
     intent_keywords = {
-    "greeting": ["hello", "hu", "how are you", "i have a question","How are you doing", "I need help", "hi", "hii", "hey", "whats", "yo", "howdy", "hiya", "greetings", "sup", "popping", "morning", "afternoon", "evening"],
+    "greeting": ["hello", "hu",  "hi", "hii", "hey", "whats", "yo", "howdy", "hiya", "greetings", "sup", "popping", "morning", "afternoon", "evening"],
     "thanks": ["thank", "thanks", "thankyou", "appreciate", "ok", "appreciated"],
     "goodbye": ["bye", "goodbye", "see", "later", "farewell"],
-    "how_are_you": ["how are you", "How are you?", "how's it going", "how do you do"],
-    "bot_name": ["what is your name", "who are you", "your name"],
-    "bot_joke": ["tell me a joke", "make me laugh", "joke please"],
-    "bot_favorite_color": ["favorite color", "what color do you like"],
-    "bot_creator": ["who made you", "who created you"],
-
+    
  }
 
     for intent, keywords in intent_keywords.items():
@@ -56,6 +51,12 @@ def detect_intent(user_input):
             return intent
 
     phrase_keywords = {
+        "how_are_you": ["how are you", "How are you?", "how's it going", "how do you do""how are you", "i have a question","How are you doing", "I need help",],
+        "bot_name": ["what is your name", "who are you", "your name"],
+        "bot_joke": ["tell me a joke", "make me laugh", "joke please"],
+        "bot_favorite_color": ["favorite color", "what color do you like"],
+        "bot_creator": ["who made you", "who created you"],
+        "bot_name": ["what is your name", "who are you", "your name"],
         "bot_identity": ["who are you", "Which university are you representing ?", "what are you", "tell me about yourself", "introduce yourself"],
         "bot_capabilities": ["what can you do", "how can you help", "what are your features", "Where do I go to ask basic questions", "how do you help students"],
         "academic_calendar": ["academic calendar", "show me the academic calendar", "when is the examination starting?","when will final exam starting", "when is exam starting", "when is school resuming", "when does semester start", "school break dates", "is tomorrow school", "when is public holiday", "is there holiday tomorrow", "when is next school holiday"],
@@ -171,7 +172,7 @@ intent_responses = {
             "image": "https://res.cloudinary.com/di5myl6tt/image/upload/v1749026247/findAdvisorGuidePhone_m3eosn.jpg"
             },
 
-        "contact_counseling": " +905488692685 You can reach the school psychologist, Ibrahim Ray, at +90 548 869 2685. " "Contact him directly or on whatsapp to book a counseling appointment. ",
+        "contact_counseling": " You can reach the school psychologist, Ibrahim Ray, at +90 548 869 2685. " "Contact him directly or on whatsapp to book a counseling appointment. ",
         "locate_student_affairs": "Contact or Visit the Student Dean, if you have any enquires regarding petitions applications or to make a complaint",
         
         "campus_directions": "",
