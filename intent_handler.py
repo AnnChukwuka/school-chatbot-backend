@@ -173,14 +173,8 @@ intent_responses = {
 
         "contact_counseling": " +905488692685 You can reach the school psychologist, Ibrahim Ray, at +90 548 869 2685. " "Contact him directly or on whatsapp to book a counseling appointment. ",
         "locate_student_affairs": "Contact or Visit the Student Dean, if you have any enquires regarding petitions applications or to make a complaint",
-        "russian_courses": "Yes—BAU Cyprus’s Foreign Languages Division offers a sequence of Russian courses as general electives. Specifically, you can enroll in:"
-                            "1. Basic Russian I(GEP0825) "
-                            "2. Basic Russian II (GEP0826)" 
-                            "3. Intermediate Russian I (GEP0827)" 
-                            "4. Intermediate Russian II (GEP0828)" 
-
-                            "If you’re interested, just reach out to the Foreign Language Division to see when those electives are running next semester. Inst. Eda Aşılmaz in A-Block, 2nd floor",
-                            "campus_directions": "",
+        
+        "campus_directions": "",
         "get_food": "You can get food from the Gastro Cafeteria, it located at ",
         "campus_food_african": "Sorry currently we don't have african delicacies in on Campus, but you can still check out the cafteria, you may see something you like!",
         "get_drink_and_snacks":"You can get snacks, soft drinks and water from the vending machine in the A-Block, or walk to the cafeteria to get varieties",
