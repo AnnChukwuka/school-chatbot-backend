@@ -63,7 +63,7 @@ async def chat_endpoint(req: ChatRequest):
                 {
                     "role": "system",
                     "content": (
-                        "You are Azalea, a friendly university assistant at BAU. "
+                        "You are Azalea, a friendly university assistant at Bahcesehir Cyprus University. "
                         "Answer any academic, school-related, or general student questions helpfully."
                     )
                 },
