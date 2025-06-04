@@ -168,7 +168,6 @@ intent_responses = {
                 "To contact your advisor, scroll down in your OIS portal to the *Courses* section. " "You’ll see your advisor’s name, email, and office number(maybe if provided). "
                 "If you still can't see your advisor's information, you should contact the registration office.",
             ),
-            "image": "https://res.cloudinary.com/di5myl6tt/image/upload/v1749025960/Screenshot_2025-06-04_113038_hzvn9w.png",
             "image": "https://res.cloudinary.com/di5myl6tt/image/upload/v1749026247/findAdvisorGuidePhone_m3eosn.jpg"
             },
 
@@ -194,14 +193,7 @@ intent_responses = {
         "campus_events_schedule": "",
         "campus_facilities_football": "The football field is ",
         "bus_schedule_times": "",
-        "bus_schedule_times": {
-            "text": (
-                "There are different buses for different routes,  "
-                " "
-            ),
-            "image": "",
-            "image": ""
-        },      
+        "bus_schedule_times":  "There are different buses for different routes,  ",
         "department_change": " To change your department, visit the registration office, in the B-Block",
         "course_change": " To change your courses, visit your Course Advisor",
 
