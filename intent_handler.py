@@ -11,7 +11,7 @@ from difflib import get_close_matches  # For better fuzzy matching
 db = firestore.client()
 
 # Load intents.json
-with open('scripts/intents.json', 'r', encoding='utf-8') as f:
+with open('intents.json', 'r', encoding='utf-8') as f:
     intents = json.load(f)
 
 intent_keywords = intents['intent_keywords']
