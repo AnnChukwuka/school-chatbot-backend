@@ -5,9 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional                    
 from uuid import uuid4
-from intent_handler import detect_intent, intent_responses, save_chat_message, log_unknown_query
+from intent_handler import detect_intent, intent_responses, get_response, save_chat_message, log_unknown_query
 from config import OPENAI_API_KEY, OPENAI_MODEL, API_KEY
 from openai import OpenAI
+from fastapi.responses import JSONResponse
 import firebase_admin
 from firebase_admin import firestore
 
@@ -36,7 +37,8 @@ def verify_api_key(x_api_key: str = Header(...)):
     if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-@app.post("/chat", response_model=ChatResponse)
+
+@app.post("/chat")
 async def chat_endpoint(req: ChatRequest):
     q = req.message
     session_id = req.session_id or str(uuid4())
@@ -50,11 +52,12 @@ async def chat_endpoint(req: ChatRequest):
         log_unknown_query(q)
 
     if intent and intent in intent_responses and intent != "unknown":
-        answer = intent_responses[intent]
+        answer = get_response(intent)  
         if req.log_to_firebase:
-            save_chat_message(session_id, answer, "bot")
-        return ChatResponse(answer=answer)
+            save_chat_message(session_id, answer["text"], "bot")
+        return JSONResponse(content=answer)  
 
+    # fallback OpenAI
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
@@ -74,13 +77,14 @@ async def chat_endpoint(req: ChatRequest):
         reply = response.choices[0].message.content.strip()
         if req.log_to_firebase:
             save_chat_message(session_id, reply, "bot")
-        return ChatResponse(answer=reply)
+        return JSONResponse(content={"type": "text", "text": reply})  # fallback always text
     except Exception as e:
         print("OpenAI fallback failed:", e)
         fallback = "Sorry, I couldn't find an answer to that."
         if req.log_to_firebase:
             save_chat_message(session_id, fallback, "bot")
-        return ChatResponse(answer=fallback)
+        return JSONResponse(content={"type": "text", "text": fallback})
+
 
 @app.get("/chat/history")
 async def get_chat_history(session_id: str, x_api_key: str = Header(...)):
