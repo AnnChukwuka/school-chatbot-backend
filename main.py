@@ -17,7 +17,10 @@ app = FastAPI()
 # Updated CORS Middleware to allow dynamic Vercel URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app",  # Accept ALL Vercel app URLs
+    allow_origins=[
+        "http://localhost:5173",
+        "https://school-chatbot-frontend.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
