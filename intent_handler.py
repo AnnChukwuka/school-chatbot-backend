@@ -56,7 +56,7 @@ def detect_intent(user_input):
     user_input_text = user_input.lower()
     for intent, phrases in phrase_keywords.items():
         lower_phrases = [p.lower() for p in phrases]
-        matches = get_close_matches(user_input_text, lower_phrases, n=1, cutoff=0.9)
+        matches = get_close_matches(user_input_text, lower_phrases, n=1, cutoff=0.8)
         if matches:
             print(f"Matched phrase intent: {intent}")
             return intent
